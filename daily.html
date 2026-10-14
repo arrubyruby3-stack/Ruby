@@ -13,6 +13,56 @@
 
 <body>
 
+            <!-- LOGIN PAGE -->
+    <div id="loginScreen" class="auth-screen">
+        <div class="auth-card">
+            <div class="auth-logo">✦</div>
+            <p class="auth-eyebrow">LEVEL UP YOUR LIFE</p>
+            <h1>Welcome to <span>DailyQuest</span></h1>
+            <p class="auth-subtitle">Login untuk melanjutkan perjalananmu.</p>
+
+            <form id="authForm">
+                <div class="form-field">
+                    <label for="authEmail">Email</label>
+                    <input id="authEmail" type="email"
+                        placeholder="nama@email.com" autocomplete="email" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="authPassword">Password</label>
+                    <input id="authPassword" type="password"
+                        placeholder="Minimal 6 karakter"
+                        autocomplete="current-password"
+                        minlength="6" required>
+                </div>
+
+                <p id="authError" class="auth-error" role="alert"></p>
+
+                <button id="authSubmitBtn"
+                    class="button button-primary auth-submit" type="submit">
+                    Login
+                </button>
+
+                <button id="authModeToggle"
+                    class="button button-secondary auth-submit" type="button">
+                    Belum punya akun? Daftar
+                </button>
+
+                <div class="auth-divider"><span>atau</span></div>
+
+                <button id="authGoogleBtn"
+                    class="button button-secondary auth-submit" type="button">
+                    Lanjutkan dengan Google
+                </button>
+            </form>
+
+            <p class="auth-note">Data quest kamu akan disinkronkan melalui Firebase.</p>
+        </div>
+    </div>
+
+    <!-- APLIKASI UTAMA -->
+    <div id="appShell" class="hidden">
+
     <!-- OVERLAY MOBILE -->
     <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
@@ -103,6 +153,14 @@
                 <strong id="sidebarNameFooter">DailyQuest Player</strong>
                 <span id="storageStatus">● Saved locally</span>
             </div>
+
+        <div class="sidebar-logout">
+            <button id="logoutBtn" class="logout-button">
+                <span>↪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+            
             <button
                 id="footerProfileBtn"
                 class="icon-button"
@@ -1062,6 +1120,9 @@
             </div>
         </div>
     </div>
+
+        </div><!-- akhir appShell -->
+
 
 
 

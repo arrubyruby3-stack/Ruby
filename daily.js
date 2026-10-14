@@ -369,6 +369,11 @@ function saveState() {
             JSON.stringify(state)
         );
 
+        window.dispatchEvent(new CustomEvent("dailyquest:statechange", {
+            detail: { state: JSON.parse(JSON.stringify(state)) }
+        }));
+
+
         $("#storageStatus").textContent = "● Saved locally";
 
         return true;
@@ -2125,3 +2130,27 @@ function initializeApp() {
 }
 
 initializeApp();
+
+window.dailyQuestApp = {
+    getState() {
+        return JSON.parse(JSON.stringify(state));
+    },
+
+    setState(data) {
+        state = normalizeState(data);
+        applyTheme(state.theme, false);
+
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            localStorage.setItem(THEME_KEY, state.theme);
+        } catch (error) {
+            console.error("Gagal menyimpan data akun:", error);
+        }
+
+        lastUnlocked = new Set(
+            getUnlockedAchievements().map(item => item.id)
+        );
+
+        renderAll();
+    }
+};
