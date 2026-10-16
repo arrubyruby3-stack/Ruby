@@ -261,18 +261,60 @@ updateAuthMode();
 console.info("DailyQuest: pengunci login siap.");
 console.info("DailyQuest: tombol akun siap.");
 
-// ===== LOGOUT DAILYQUEST =====
+// ===== MENU AKUN =====
+const accountMenu = document.querySelector("#accountMenu");
+const accountMenuBtn = document.querySelector("#footerProfileBtn");
+const aboutBtn = document.querySelector("#aboutBtn");
+const aboutModal = document.querySelector("#aboutModal");
+const aboutCloseBtn = document.querySelector("#aboutCloseBtn");
 const logoutBtn = document.querySelector("#logoutBtn");
 
+accountMenuBtn?.addEventListener("click", event => {
+    event.stopPropagation();
+
+    const isOpening = accountMenu.classList.contains("hidden");
+    accountMenu.classList.toggle("hidden");
+    accountMenuBtn.setAttribute("aria-expanded", String(isOpening));
+});
+
+document.addEventListener("click", event => {
+    if (
+        accountMenu &&
+        !accountMenu.contains(event.target) &&
+        !accountMenuBtn?.contains(event.target)
+    ) {
+        accountMenu.classList.add("hidden");
+        accountMenuBtn?.setAttribute("aria-expanded", "false");
+    }
+});
+
+aboutBtn?.addEventListener("click", () => {
+    accountMenu?.classList.add("hidden");
+    accountMenuBtn?.setAttribute("aria-expanded", "false");
+    aboutModal?.classList.remove("hidden");
+});
+
+aboutCloseBtn?.addEventListener("click", () => {
+    aboutModal?.classList.add("hidden");
+});
+
+aboutModal?.addEventListener("click", event => {
+    if (event.target === aboutModal) {
+        aboutModal.classList.add("hidden");
+    }
+});
+
 logoutBtn?.addEventListener("click", async () => {
-    const yakin = confirm("Yakin ingin logout dari DailyQuest?");
-    if (!yakin) return;
+    accountMenu?.classList.add("hidden");
+
+    if (!confirm("Yakin ingin logout dari DailyQuest?")) return;
 
     try {
         await window.dailyQuestFirebase.logout();
-        console.info("DailyQuest: logout berhasil.");
     } catch (error) {
         console.error("Logout gagal:", error);
         alert("Logout gagal. Periksa koneksi internet.");
     }
 });
+
+

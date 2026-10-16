@@ -147,26 +147,24 @@
             </div>
         </div>
 
+            <div id="accountMenu" class="account-menu hidden">
+        <button type="button" id="aboutBtn">ⓘ Tentang Kami</button>
+        <button type="button" id="logoutBtn" class="account-logout">↪ Logout</button>
+             </div>
+
         <div class="sidebar-footer">
             <div class="sidebar-avatar" id="sidebarAvatar">Q</div>
             <div class="sidebar-user-info">
                 <strong id="sidebarNameFooter">DailyQuest Player</strong>
                 <span id="storageStatus">● Saved locally</span>
             </div>
-
-        <div class="sidebar-logout">
-            <button id="logoutBtn" class="logout-button">
-                <span>↪</span>
-                <span>Logout</span>
-            </button>
-        </div>
             
             <button
                 id="footerProfileBtn"
                 class="icon-button"
-                data-open-profile
-                aria-label="Edit profile"
-                title="Edit profile"
+                aria-label="Menu akun"
+                title="Menu akun"
+                aria-expanded="false"
             >⋯</button>
         </div>
 
@@ -1089,6 +1087,120 @@
                 </div>
             </div>
 
+             <div class="settings-section">
+                <h3>🎨 Tampilan</h3>
+
+            <label for="settingTheme">Tema</label>
+            <select id="settingTheme">
+                <option value="dark">Gelap</option>
+                <option value="light">Terang</option>
+            </select>
+
+            <label for="settingAccent">Warna aksen</label>
+            <select id="settingAccent">
+                <option value="#8b5cf6">Ungu</option>
+                <option value="#3b82f6">Biru</option>
+                <option value="#10b981">Hijau</option>
+                <option value="#f97316">Oranye</option>
+                <option value="#ec4899">Merah muda</option>
+            </select>
+
+            <label for="settingFontSize">Ukuran teks</label>
+            <select id="settingFontSize">
+                <option value="14">Kecil</option>
+                <option value="16">Normal</option>
+                <option value="18">Besar</option>
+            </select>
+            </div>
+
+            <div class="settings-section">
+            <h3>🎯 Target harian</h3>
+
+            <label for="settingTargetXP">Target XP per hari</label>
+            <input id="settingTargetXP" type="number" min="10" max="10000" step="10" value="100">
+
+            <label for="settingTargetQuests">Target quest selesai per hari</label>
+            <input id="settingTargetQuests" type="number" min="1" max="100" value="3">
+
+            <label for="settingTargetStreak">Target streak (hari)</label>
+            <input id="settingTargetStreak" type="number" min="1" max="365" value="7">
+            </div>
+
+            <div class="settings-section">
+            <h3>🔔 Pengingat</h3>
+
+            <label class="settings-check">
+                <input id="settingReminder" type="checkbox">
+                Aktifkan pengingat saat aplikasi dibuka
+            </label>
+
+            <label for="settingReminderTime">Waktu pengingat</label>
+            <input id="settingReminderTime" type="time" value="20:00">
+
+            <button id="enableNotificationsBtn" type="button" class="primary-button">
+                Izinkan notifikasi browser
+            </button>
+
+            <p class="settings-note">
+                Pengingat otomatis hanya berjalan ketika aplikasi aktif. Browser mungkin membatasi notifikasi di latar belakang.
+            </p>
+            </div>
+
+            <div class="settings-section">
+            <h3>🔊 Efek</h3>
+
+            <label class="settings-check">
+                <input id="settingSound" type="checkbox" checked>
+                Aktifkan suara
+            </label>
+
+            <label class="settings-check">
+                <input id="settingAnimations" type="checkbox" checked>
+                Aktifkan animasi ikon
+            </label>
+            </div>
+
+            <div class="settings-section">
+            <h3>🌐 Bahasa</h3>
+            <label for="settingLanguage">Bahasa aplikasi</label>
+            <select id="settingLanguage">
+                <option value="id">Bahasa Indonesia</option>
+                <option value="en">English</option>
+            </select>
+            <p class="settings-note">
+                Pilihan bahasa disimpan. Terjemahan seluruh aplikasi perlu diterapkan ke setiap teks antarmuka.
+            </p>
+            </div>
+
+            <div class="settings-section">
+            <h3>💾 Data & privasi</h3>
+
+            <button id="importDataBtn" type="button" class="secondary-button">
+                Pulihkan backup JSON
+            </button>
+            <input id="importDataFile" type="file" accept=".json,application/json" hidden>
+
+            <button id="exportDataBtn" type="button" class="secondary-button">
+                Ekspor backup JSON
+            </button>
+
+            <button id="viewActivityBtn" type="button" class="secondary-button">
+                Lihat aktivitas
+            </button>
+
+            <div id="activityList" class="settings-activity">
+                Belum ada aktivitas yang dicatat.
+            </div>
+
+            <p class="settings-note">
+                Backup berisi data aplikasi, bukan kata sandi atau token login.
+            </p>
+
+            <button id="resetDataBtn" type="button" class="danger-button">
+                Reset data aplikasi
+            </button>
+            </div>
+
             <div class="settings-group">
                 <h3>Data</h3>
                 <div class="settings-row">
@@ -1122,9 +1234,28 @@
     </div>
 
         </div><!-- akhir appShell -->
+        
+    <div id="aboutModal" class="modal-backdrop hidden">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>Tentang DailyQuest</h2>
+                <button type="button" id="aboutCloseBtn"
+                    class="icon-button" aria-label="Tutup">×</button>
+            </div>
 
-
-
+            <div class="about-content">
+                <div class="about-logo">✦</div>
+                <h3>DailyQuest</h3>
+                <p>Level Up Your Life.</p>
+                <p>
+                    DailyQuest membantu kamu membangun kebiasaan,
+                    mengelola quest harian, mengumpulkan XP, dan
+                    memantau perkembangan diri.
+                </p>
+                <small>Versi 1.0 · Made for your next level.</small>
+            </div>
+        </div>
+    </div>
 
     <script src="daily.js"></script>
     <script type="module" src="firebase-sync.js"></script>
