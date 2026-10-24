@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="daily.css">
 </head>
-
+    
 <body>
 
             <!-- LOGIN PAGE -->
@@ -1074,27 +1074,9 @@
                 <button class="icon-button" data-close-modal aria-label="Tutup">×</button>
             </div>
 
-            <div class="settings-group">
-                <h3>Tampilan</h3>
-                <div class="settings-row">
-                    <div>
-                        <strong>Tema aplikasi</strong>
-                        <p>Ubah tampilan terang atau gelap.</p>
-                    </div>
-                    <button id="settingsThemeToggle" class="settings-action">
-                        Ganti tema
-                    </button>
-                </div>
-            </div>
 
              <div class="settings-section">
                 <h3>🎨 Tampilan</h3>
-
-            <label for="settingTheme">Tema</label>
-            <select id="settingTheme">
-                <option value="dark">Gelap</option>
-                <option value="light">Terang</option>
-            </select>
 
             <label for="settingAccent">Warna aksen</label>
             <select id="settingAccent">
@@ -1166,9 +1148,10 @@
             <select id="settingLanguage">
                 <option value="id">Bahasa Indonesia</option>
                 <option value="en">English</option>
+                <option value="ja">日本語</option>
             </select>
             <p class="settings-note">
-                Pilihan bahasa disimpan. Terjemahan seluruh aplikasi perlu diterapkan ke setiap teks antarmuka.
+                Bahasa langsung diterapkan ke seluruh tampilan aplikasi.
             </p>
             </div>
 
@@ -1257,6 +1240,7 @@
         </div>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="daily.js"></script>
     <script type="module" src="firebase-sync.js"></script>
 

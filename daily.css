@@ -2,6 +2,7 @@
    DAILYQUEST — PREMIUM DESIGN SYSTEM
    ========================================= */
 
+
 :root {
     color-scheme: dark;
 
@@ -21,7 +22,7 @@
 
     --primary: #a994ff;
     --primary-strong: #8d72ff;
-    --primary-soft: rgba(169, 148, 255, 0.13);
+    --primary-soft: color-mix(in srgb, var(--accent-color) 13%, transparent);
 
     --green: #72dcb2;
     --blue: #7ab7ff;
@@ -37,6 +38,8 @@
     --transition: 180ms ease;
 }
 
+
+/* ===== TEMA TERANG ===== */
 html[data-theme="light"] {
     color-scheme: light;
 
@@ -54,10 +57,6 @@ html[data-theme="light"] {
     --border: rgba(37, 36, 56, 0.08);
     --border-strong: rgba(37, 36, 56, 0.15);
 
-    --primary: #7659ed;
-    --primary-strong: #6446df;
-    --primary-soft: rgba(118, 89, 237, 0.10);
-
     --green: #269b75;
     --blue: #367fdb;
     --orange: #ce7b2f;
@@ -66,6 +65,72 @@ html[data-theme="light"] {
 
     --shadow: 0 15px 45px rgba(37, 36, 56, 0.08);
 }
+
+/* ===== AKSEN DINAMIS DAILYQUEST ===== */
+html {
+    --accent-color: #8b5cf6;
+}
+
+/* Warna utama mengikuti aksen yang dipilih */
+html[data-theme="light"],
+html[data-theme="dark"] {
+    --primary: var(--accent-color);
+    --primary-strong: color-mix(
+        in srgb,
+        var(--accent-color) 82%,
+        black
+    );
+    --primary-soft: color-mix(
+        in srgb,
+        var(--accent-color) 12%,
+        transparent
+    );
+}
+
+/* ===== TOMBOL UTAMA ===== */
+button.primary-button,
+.primary-button,
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #ffffff;
+}
+
+button.primary-button:hover,
+.primary-button:hover,
+.btn-primary:hover {
+    background-color: var(--primary-strong);
+}
+
+/* ===== MENU AKTIF ===== */
+.nav-item.active,
+.sidebar a.active,
+.sidebar button.active {
+    color: var(--accent-color);
+    background-color: var(--primary-soft);
+}
+
+/* ===== INPUT DAN PROGRES ===== */
+input,
+select,
+textarea,
+progress {
+    accent-color: var(--accent-color);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--accent-color);
+    outline-color: var(--accent-color);
+}
+
+/* ===== IKON DAN TAUTAN ===== */
+a:hover,
+.icon-accent {
+    color: var(--accent-color);
+}
+
 
 
 /* =========================================
@@ -230,10 +295,10 @@ textarea {
 
     color: #fff;
     background:
-        linear-gradient(145deg, #bba9ff, #795cf2);
+        linear-gradient(145deg, var(--accent-light), var(--accent-deep));
 
     border-radius: 14px;
-    box-shadow: 0 5px 22px rgba(141, 114, 255, 0.25);
+    box-shadow: 0 5px 22px color-mix(in srgb, var(--accent-color) 25%, transparent);
 
     font-size: 26px;
 }
@@ -314,7 +379,7 @@ textarea {
 .nav-link.active {
     color: var(--primary);
     background: var(--primary-soft);
-    border-color: rgba(169, 148, 255, 0.10);
+    border-color: color-mix(in srgb, var(--accent-color) 10%, transparent);
 }
 
 .nav-link.active::before {
@@ -375,7 +440,7 @@ textarea {
             var(--surface)
         );
 
-    border: 1px solid rgba(169, 148, 255, 0.16);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 16%, transparent);
     border-radius: 15px;
 }
 
@@ -434,7 +499,7 @@ textarea {
     height: 100%;
 
     background:
-        linear-gradient(90deg, var(--primary-strong), #c1adff);
+        linear-gradient(90deg, var(--primary-strong), var(--accent-light));
 
     border-radius: inherit;
     transition: width 350ms ease;
@@ -730,20 +795,22 @@ textarea {
     transform: translateY(0);
 }
 
+
 .button-primary {
     color: #fff;
-    background:
-        linear-gradient(135deg, #a994ff, #8769f4);
-
-    box-shadow: 0 4px 15px rgba(141, 114, 255, 0.14);
+    background: linear-gradient(
+        135deg,
+        var(--accent-color, #8b5cf6),
+        var(--primary-strong, #7659ed)
+    );
+    box-shadow: 0 4px 15px var(--primary-soft);
 }
 
 .button-primary:hover {
-    background:
-        linear-gradient(135deg, #b9a8ff, #967bff);
-
-    box-shadow: 0 6px 22px rgba(141, 114, 255, 0.25);
+    background: var(--primary-strong, #7659ed);
+    box-shadow: 0 6px 22px var(--primary-soft);
 }
+
 
 .button-secondary {
     color: var(--text);
@@ -873,18 +940,18 @@ textarea {
 }
 
 .stat-icon.green {
-    color: var(--green);
-    background: rgba(114, 220, 178, 0.10);
+    color: var(--primary);
+    background: var(--primary-soft);
 }
 
 .stat-icon.blue {
-    color: var(--blue);
-    background: rgba(122, 183, 255, 0.11);
+    color: var(--primary);
+    background: var(--primary-soft);
 }
 
 .stat-icon.orange {
-    color: var(--orange);
-    background: rgba(255, 189, 130, 0.10);
+    color: var(--primary);
+    background: var(--primary-soft);
 }
 
 .stat-number {
@@ -1124,7 +1191,7 @@ textarea {
     height: 100%;
 
     background:
-        linear-gradient(90deg, var(--primary-strong), #c3b2ff);
+        linear-gradient(90deg, var(--primary-strong), var(--accent-light));
 
     border-radius: inherit;
     transition: width 350ms ease;
@@ -1464,7 +1531,7 @@ textarea {
     min-height: 2px;
 
     background:
-        linear-gradient(180deg, #c4b2ff, #8465f3);
+        linear-gradient(180deg, var(--accent-light), var(--accent-deep));
 
     border-radius: 6px 6px 2px 2px;
 
@@ -1524,7 +1591,7 @@ textarea {
 
     color: var(--primary);
     background: var(--primary-soft);
-    border: 1px solid rgba(169, 148, 255, 0.12);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 12%, transparent);
     border-radius: 12px;
 
     font-size: 18px;
@@ -1566,17 +1633,17 @@ textarea {
     overflow: hidden;
 
     background:
-        linear-gradient(145deg, #292143, #1b1928 75%);
+        linear-gradient(145deg, color-mix(in srgb, var(--accent-color) 26%, #15141c), #1b1928 75%);
 
-    border: 1px solid rgba(169, 148, 255, 0.22);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 22%, transparent);
     border-radius: var(--radius);
 }
 
 html[data-theme="light"] .focus-card {
     background:
-        linear-gradient(145deg, #eee8ff, #f8f5ff 80%);
+        linear-gradient(145deg, color-mix(in srgb, var(--accent-color) 13%, white), color-mix(in srgb, var(--accent-color) 5%, white) 80%);
 
-    border-color: rgba(118, 89, 237, 0.16);
+    border-color: color-mix(in srgb, var(--accent-color) 16%, transparent);
 }
 
 .focus-decoration {
@@ -1586,7 +1653,7 @@ html[data-theme="light"] .focus-card {
     width: 150px;
     height: 150px;
 
-    border: 1px solid rgba(169, 148, 255, 0.12);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 12%, transparent);
     border-radius: 50%;
 }
 
@@ -1610,7 +1677,7 @@ html[data-theme="light"] .focus-card {
     margin-bottom: 22px;
 
     color: #fff;
-    background: linear-gradient(135deg, #b9a7ff, #8769f4);
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-deep));
     border-radius: 12px;
 
     font-size: 20px;
@@ -1644,11 +1711,11 @@ html[data-theme="light"] .focus-card {
     width: 100%;
 
     color: #fff;
-    background: linear-gradient(135deg, #9f87ff, #795cf2);
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-deep));
 }
 
 .focus-button:hover {
-    box-shadow: 0 6px 22px rgba(141, 114, 255, 0.22);
+    box-shadow: 0 6px 22px color-mix(in srgb, var(--accent-color) 22%, transparent);
 }
 
 
@@ -1829,7 +1896,7 @@ html[data-theme="light"] .focus-card {
 
     color: var(--primary);
     background: var(--primary-soft);
-    border: 1px solid rgba(169, 148, 255, 0.16);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 16%, transparent);
     border-radius: 17px;
 
     font-size: 28px;
@@ -1895,7 +1962,7 @@ html[data-theme="light"] .focus-card {
 
     color: var(--primary);
     background: var(--primary-soft);
-    border: 1px solid rgba(169, 148, 255, 0.13);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 13%, transparent);
     border-radius: 14px;
 
     font-size: 22px;
@@ -3026,7 +3093,7 @@ html[data-theme="light"] .focus-card {
     justify-content: center;
     padding: 24px;
     background:
-        radial-gradient(ellipse at top, rgba(124, 92, 255, .18), transparent 55%),
+        radial-gradient(ellipse at top, color-mix(in srgb, var(--accent-color) 18%, transparent), transparent 55%),
         var(--bg, #111318);
 }
 
@@ -3053,11 +3120,11 @@ html[data-theme="light"] .focus-card {
     border-radius: 18px;
     color: white;
     font-size: 30px;
-    background: linear-gradient(135deg, #8b5cf6, #5b7cfa);
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-deep));
 }
 
 .auth-eyebrow {
-    color: #a78bfa;
+    color: var(--accent-light);
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 2px;
@@ -3069,7 +3136,7 @@ html[data-theme="light"] .focus-card {
 }
 
 .auth-card h1 span {
-    color: #a78bfa;
+    color: var(--accent-light);
 }
 
 .auth-subtitle,
@@ -3203,7 +3270,7 @@ html[data-theme="light"] .focus-card {
 }
 
 .account-menu button:hover {
-    background: rgba(139, 92, 246, .12);
+    background: color-mix(in srgb, var(--accent-color) 12%, transparent);
 }
 
 .account-menu .account-logout {
@@ -3223,7 +3290,7 @@ html[data-theme="light"] .focus-card {
     height: 58px;
     margin: 0 auto 12px;
     border-radius: 18px;
-    background: linear-gradient(135deg, #8b5cf6, #5b7cfa);
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-deep));
     color: white;
     font-size: 30px;
 }
@@ -3356,11 +3423,490 @@ html[data-animations="on"] .icon-button:active {
     width: 100%;
   }
 }
+    
 
-body {
-  font-size: var(--font-size, 16px);
-}
+
+
+
+
+/* =========================================
+   DAILYQUEST — AKSEN DAN UKURAN TEKS DINAMIS
+   ========================================= */
 
 :root {
-  --accent-color: #8b5cf6;
+    --accent-color: #8b5cf6;
+    --accent-hover: color-mix(in srgb, var(--accent-color) 82%, black);
+    --accent-soft: color-mix(in srgb, var(--accent-color) 14%, transparent);
+}
+
+/* Sinkronkan warna utama dengan warna aksen */
+html {
+    --primary: var(--accent-color);
+    --primary-strong: var(--accent-hover);
+    --primary-soft: var(--accent-soft);
+}
+
+/* Warna teks dan elemen interaktif */
+button.primary-button,
+.primary-button,
+.btn-primary,
+.button-primary,
+#headerAddQuest {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+button.primary-button:hover,
+.primary-button:hover,
+.btn-primary:hover,
+.button-primary:hover,
+#headerAddQuest:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+.nav-link.active,
+.nav-item.active,
+.sidebar a.active,
+.sidebar button.active {
+    color: var(--accent-color);
+    background-color: var(--accent-soft);
+    border-color: var(--accent-soft);
+}
+
+.text-primary,
+.accent,
+.icon-accent,
+.nav-link.active .nav-icon,
+.nav-item.active .nav-icon {
+    color: var(--accent-color);
+}
+
+input,
+select,
+textarea,
+progress {
+    accent-color: var(--accent-color);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--accent-color);
+}
+
+::selection {
+    background: var(--accent-color);
+    color: #fff;
+}
+
+/* Ukuran teks dasar — mengikuti preferensi pengguna */
+html {
+    font-size: var(--font-size, 16px);
+}
+
+body {
+    font-size: 1rem;
+}
+
+/* Elemen yang sebelumnya memakai ukuran px */
+.sidebar .nav-link,
+.sidebar .nav-count,
+.sidebar-section-label,
+.sidebar-level-heading strong,
+.sidebar-level-heading small,
+.sidebar-xp-row,
+.sidebar-user-info strong,
+.sidebar-user-info span,
+.breadcrumb,
+.date-display,
+.streak-pill,
+.eyebrow,
+.panel-kicker,
+.welcome-section p,
+.page-intro p,
+.button,
+.text-button,
+.stat-label,
+.stat-foot,
+.panel-heading h2,
+.modal-header h2,
+.plain-title,
+.quest-description,
+.tag,
+.quest-reward,
+.chart-label,
+.form-field label,
+.form-field input,
+.form-field select,
+.form-field textarea,
+.field-help,
+.toast,
+.app-footer {
+    font-size: 0.875rem;
+}
+
+/* Judul tetap lebih besar dari teks biasa */
+.welcome-section h1,
+.page-intro h1 {
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+}
+
+.panel-heading h2,
+.modal-header h2 {
+    font-size: 1.125rem;
+}
+
+.sidebar .brand-text strong {
+    font-size: 1.25rem;
+}
+
+/* Preferensi animasi tetap dihormati */
+html[data-animations="off"] *,
+html[data-animations="off"] *::before,
+html[data-animations="off"] *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+
+/* =========================================================
+   AKSEN — TURUNAN WARNA (dipakai gradien, bayangan, ikon, logo)
+   ========================================================= */
+:root {
+    --accent-light: color-mix(in srgb, var(--accent-color) 62%, white);
+    --accent-deep: color-mix(in srgb, var(--accent-color) 76%, black);
+    --accent-shadow: color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+.nav-link.active .nav-icon,
+.panel-kicker,
+.eyebrow,
+.auth-eyebrow {
+    color: var(--accent-color);
+}
+
+.auth-screen {
+    background:
+        radial-gradient(ellipse at top, color-mix(in srgb, var(--accent-color) 20%, transparent), transparent 55%),
+        var(--bg, #111318);
+}
+
+/* =========================================================
+   ANIMASI KEYFRAME
+   (otomatis mati bila "Aktifkan animasi ikon" dimatikan
+   atau perangkat meminta reduced-motion)
+   ========================================================= */
+
+/* --- Masuk bertahap saat halaman dibuka --- */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px) scale(.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.page.active .welcome-section,
+.page.active .page-intro,
+.page.active .stat-card,
+.page.active .dashboard-grid > .panel,
+.page.active .panel {
+    animation: fadeUp 600ms cubic-bezier(.22, 1, .36, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+.stats-grid > :nth-child(1), .dashboard-grid > :nth-child(1) { --i: 1; }
+.stats-grid > :nth-child(2), .dashboard-grid > :nth-child(2) { --i: 2; }
+.stats-grid > :nth-child(3), .dashboard-grid > :nth-child(3) { --i: 3; }
+.stats-grid > :nth-child(4), .dashboard-grid > :nth-child(4) { --i: 4; }
+.dashboard-grid > :nth-child(5) { --i: 5; }
+.dashboard-grid > :nth-child(6) { --i: 6; }
+
+/* --- Hover kartu: terangkat + glow aksen --- */
+.stat-card,
+.panel {
+    transition: transform 260ms cubic-bezier(.22, 1, .36, 1),
+                box-shadow 260ms ease,
+                border-color 260ms ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: color-mix(in srgb, var(--accent-color) 45%, transparent);
+    box-shadow: 0 16px 38px var(--accent-shadow);
+}
+
+.stat-card:hover .stat-icon {
+    animation: iconWiggle 600ms ease;
+}
+
+@keyframes iconWiggle {
+    0%   { transform: rotate(0) scale(1); }
+    25%  { transform: rotate(-12deg) scale(1.15); }
+    55%  { transform: rotate(10deg) scale(1.15); }
+    100% { transform: rotate(0) scale(1); }
+}
+
+.nav-link:hover .nav-icon {
+    animation: iconWiggle 500ms ease;
+}
+
+/* --- Logo & ikon mengambang / bercahaya --- */
+@keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+}
+
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 var(--accent-shadow); }
+    50%      { box-shadow: 0 0 0 10px transparent; }
+}
+
+.auth-logo {
+    animation: floatY 4s ease-in-out infinite, glowPulse 2.8s ease-in-out infinite;
+}
+
+.about-logo {
+    animation: floatY 4s ease-in-out infinite;
+}
+
+.brand-logo {
+    animation: glowPulse 3s ease-in-out infinite;
+}
+
+.achievement-card:not(.locked) .achievement-icon {
+    animation: glowPulse 2.6s ease-in-out infinite;
+}
+
+/* --- Login: kartu muncul + blob aurora bergerak --- */
+@keyframes cardRise {
+    from { opacity: 0; transform: translateY(30px) scale(.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes blobDrift {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(60px, 40px) scale(1.2); }
+    100% { transform: translate(-40px, 70px) scale(.9); }
+}
+
+.auth-screen {
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-screen::before,
+.auth-screen::after {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: .32;
+    pointer-events: none;
+    background: var(--accent-color);
+    animation: blobDrift 14s ease-in-out infinite alternate;
+}
+
+.auth-screen::before { top: -140px; left: -120px; }
+
+.auth-screen::after {
+    right: -140px;
+    bottom: -160px;
+    background: var(--accent-deep);
+    animation-duration: 18s;
+    animation-direction: alternate-reverse;
+}
+
+.auth-card {
+    position: relative;
+    z-index: 1;
+    animation: cardRise 700ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* --- Teks gradien bergerak --- */
+@keyframes gradientShift {
+    to { background-position: 200% center; }
+}
+
+.auth-card h1 span {
+    background: linear-gradient(90deg, var(--accent-light), var(--accent-color), var(--accent-light));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: gradientShift 4s linear infinite;
+}
+
+/* --- Progress bar: kilau bergerak --- */
+@keyframes shimmer {
+    to { transform: translateX(100%); }
+}
+
+.progress-fill,
+.sidebar-progress-fill {
+    position: relative;
+    overflow: hidden;
+    transition: width 700ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.progress-fill::after,
+.sidebar-progress-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .38), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 2.4s ease-in-out infinite;
+}
+
+/* --- Api streak berkedip --- */
+@keyframes flicker {
+    0%, 100% { transform: scale(1) rotate(0); filter: brightness(1); }
+    30%      { transform: scale(1.18) rotate(-6deg); filter: brightness(1.25); }
+    60%      { transform: scale(.95) rotate(5deg); }
+}
+
+.streak-pill > span:first-child {
+    display: inline-block;
+    animation: flicker 1.8s ease-in-out infinite;
+}
+
+/* --- Tombol utama: denyut + kilau saat hover --- */
+@keyframes pulseRing {
+    0%   { box-shadow: 0 0 0 0 var(--accent-shadow); }
+    70%  { box-shadow: 0 0 0 12px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+#headerAddQuest {
+    position: relative;
+    overflow: hidden;
+    animation: pulseRing 2.6s ease-out infinite;
+}
+
+#headerAddQuest::after,
+.primary-button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -80%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .35), transparent);
+    transform: skewX(-20deg);
+}
+
+.primary-button {
+    position: relative;
+    overflow: hidden;
+}
+
+#headerAddQuest:hover::after,
+.primary-button:hover::after {
+    animation: sheen 700ms ease;
+}
+
+@keyframes sheen {
+    to { left: 130%; }
+}
+
+/* --- Menyelesaikan quest --- */
+@keyframes checkPop {
+    0%   { transform: scale(.6); }
+    55%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+@keyframes rippleOut {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 55%, transparent); }
+    to   { box-shadow: 0 0 0 14px transparent; }
+}
+
+.quest-check.pop {
+    animation: checkPop 450ms cubic-bezier(.34, 1.56, .64, 1), rippleOut 600ms ease-out;
+}
+
+.quest-item {
+    transition: transform 200ms ease, background-color 200ms ease, border-color 200ms ease;
+}
+
+.quest-item:hover {
+    transform: translateX(4px);
+}
+
+/* --- Toast: masuk dari kanan, keluar menghilang --- */
+@keyframes toastIn {
+    0%   { opacity: 0; transform: translateX(60px) scale(.96); }
+    60%  { opacity: 1; transform: translateX(-6px) scale(1.01); }
+    100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toastOut {
+    to { opacity: 0; transform: translateX(60px) scale(.96); }
+}
+
+.toast {
+    animation: toastIn 420ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.toast.leaving {
+    animation: toastOut 260ms ease forwards;
+}
+
+/* --- Modal: muncul dengan pantulan --- */
+@keyframes modalPop {
+    0%   { opacity: 0; transform: translateY(24px) scale(.94); }
+    70%  { opacity: 1; transform: translateY(-3px) scale(1.01); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-backdrop:not(.hidden) .modal,
+.modal-backdrop:not(.hidden) .modal-card {
+    animation: modalPop 380ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* --- Konfeti saat quest selesai / naik level --- */
+@keyframes confettiFall {
+    0%   { opacity: 1; transform: translate3d(0, 0, 0) rotate(0); }
+    100% { opacity: 0; transform: translate3d(var(--dx), 105vh, 0) rotate(var(--rot)); }
+}
+
+.confetti-piece {
+    position: fixed;
+    top: -14px;
+    z-index: 300;
+    width: 8px;
+    height: 14px;
+    border-radius: 2px;
+    pointer-events: none;
+    animation: confettiFall var(--dur, 2.4s) cubic-bezier(.25, .6, .4, 1) forwards;
+}
+
+/* --- Level ring berputar halus --- */
+@keyframes spinSlow {
+    to { transform: rotate(360deg); }
+}
+
+.level-ring {
+    position: relative;
+}
+
+.level-ring::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px dashed color-mix(in srgb, var(--accent-color) 45%, transparent);
+    pointer-events: none;
+    animation: spinSlow 18s linear infinite;
+}
+
+/* --- Hormati preferensi sistem reduced-motion --- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
 }

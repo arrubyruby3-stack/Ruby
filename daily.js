@@ -172,7 +172,7 @@ function shiftDate(key, amount) {
 function formatDate(key, options = {}) {
     if (!key) return "—";
 
-    return dateFromKey(key).toLocaleDateString("id-ID", {
+    return dateFromKey(key).toLocaleDateString(dqLocale(), {
         day: "numeric",
         month: "short",
         year: "numeric",
@@ -445,53 +445,11 @@ function dqSaveSettings() {
     }
 }
 
-function dqApplySettings() {
-    document.documentElement.style.setProperty(
-        "--accent-color",
-        dqSettings.accent
-    );
+// Locale tanggal & angka mengikuti bahasa yang dipilih (id / en / ja).
+function dqLocale() {
+    if (window.DQI18n) return window.DQI18n.locale();
 
-    document.documentElement.style.setProperty(
-        "--font-size",
-        `${dqSettings.fontSize}px`
-    );
-
-    document.documentElement.dataset.animations =
-        dqSettings.animations ? "on" : "off";
-
-    document.documentElement.lang =
-        dqSettings.language === "en" ? "en" : "id";
-
-    // Tema tetap memakai mekanisme asli DailyQuest.
-    if (state.theme !== dqSettings.theme &&
-        (dqSettings.theme === "dark" || dqSettings.theme === "light")) {
-        applyTheme(dqSettings.theme, false);
-    }
-
-    const mapping = {
-        settingTheme: state.theme,
-        settingAccent: dqSettings.accent,
-        settingFontSize: String(dqSettings.fontSize),
-        settingTargetXP: String(dqSettings.targetXP),
-        settingTargetQuests: String(dqSettings.targetQuests),
-        settingTargetStreak: String(dqSettings.targetStreak),
-        settingReminderTime: dqSettings.reminderTime,
-        settingLanguage: dqSettings.language
-    };
-
-    Object.entries(mapping).forEach(([id, value]) => {
-        const el = document.getElementById(id);
-        if (el) el.value = value;
-    });
-
-    [
-        ["settingReminder", dqSettings.reminder],
-        ["settingSound", dqSettings.sound],
-        ["settingAnimations", dqSettings.animations]
-    ].forEach(([id, value]) => {
-        const el = document.getElementById(id);
-        if (el) el.checked = Boolean(value);
-    });
+    return { id: "id-ID", en: "en-US", ja: "ja-JP" }[dqSettings.language] || "id-ID";
 }
 
 function dqRecordActivity(message) {
@@ -531,209 +489,259 @@ function dqRenderActivity() {
         message.textContent = item.message;
 
         const date = document.createElement("small");
-        date.textContent = new Date(item.at).toLocaleString(
-            dqSettings.language === "en" ? "en-US" : "id-ID"
-        );
+        date.textContent = new Date(item.at).toLocaleString(dqLocale());
 
         row.append(message, date);
         container.append(row);
     });
 }
 
-    function dqBindSettings() {
-    const byId = id => document.getElementById(id);
 
-    const bind = (id, eventName, handler) => {
-        const el = byId(id);
-        if (!el || el.dataset.dqSettingsBound === "true") return;
+/* =========================================
+   EFEK SUARA (Web Audio — tanpa file audio)
+   ========================================= */
 
-        el.dataset.dqSettingsBound = "true";
-        el.addEventListener(eventName, handler);
-    };
+let dqAudioCtx = null;
+let dqSoundCursor = 0;
 
-        byId("settingTheme")?.addEventListener("change", event => {
-            applyTheme(event.target.value);
-            dqSettings.theme = state.theme;
-            dqSaveSettings();
-            saveState();
-            dqRecordActivity("Tema diubah");
-        });
+const DQ_SOUNDS = {
+    notify:      [{ f: 880, d: 0.14 }],
+    complete:    [{ f: 523.25, d: 0.09 }, { f: 659.25, d: 0.09 }, { f: 783.99, d: 0.22 }],
+    undo:        [{ f: 440, d: 0.09 }, { f: 330, d: 0.18 }],
+    achievement: [{ f: 659.25, d: 0.1 }, { f: 783.99, d: 0.1 }, { f: 1046.5, d: 0.1 }, { f: 1318.5, d: 0.3 }],
+    levelup:     [{ f: 523.25, d: 0.1 }, { f: 659.25, d: 0.1 }, { f: 783.99, d: 0.1 }, { f: 1046.5, d: 0.1 }, { f: 1318.5, d: 0.4 }],
+    error:       [{ f: 220, d: 0.15, type: "sawtooth" }, { f: 165, d: 0.24, type: "sawtooth" }]
+};
 
-        byId("settingAccent")?.addEventListener("change", event => {
-            dqSettings.accent = event.target.value;
-            dqApplySettings();
-            dqSaveSettings();
-            dqRecordActivity("Warna aksen diubah");
-        });
+function dqGetAudio() {
+    if (dqAudioCtx) return dqAudioCtx;
 
-        byId("settingFontSize")?.addEventListener("change", event => {
-            dqSettings.fontSize = Number(event.target.value);
-            document.documentElement.style.fontSize =
-                `${dqSettings.fontSize}px`;
-            dqSaveSettings();
-        });
+    const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
 
-        [
-            ["settingTargetXP", "targetXP", 10, 10000],
-            ["settingTargetQuests", "targetQuests", 1, 100],
-            ["settingTargetStreak", "targetStreak", 1, 365]
-        ].forEach(([id, key, min, max]) => {
-            byId(id)?.addEventListener("change", event => {
-                const value = Number(event.target.value);
+    if (!AudioContextClass) return null;
 
-                if (!Number.isFinite(value) || value < min || value > max) {
-                    event.target.value = dqSettings[key];
-                    showToast(`Masukkan angka ${min}–${max}.`, "error");
-                    return;
-                }
-
-                dqSettings[key] = Math.floor(value);
-                dqSaveSettings();
-                dqRecordActivity(`Target ${key} diubah`);
-            });
-        });
-
-        [
-            ["settingReminder", "reminder"],
-            ["settingSound", "sound"],
-            ["settingAnimations", "animations"]
-        ].forEach(([id, key]) => {
-            byId(id)?.addEventListener("change", event => {
-                dqSettings[key] = event.target.checked;
-                dqApplySettings();
-                dqSaveSettings();
-            });
-        });
-
-        byId("settingReminderTime")?.addEventListener("change", event => {
-            dqSettings.reminderTime = event.target.value;
-            dqSaveSettings();
-        });
-
-        byId("settingLanguage")?.addEventListener("change", event => {
-            dqSettings.language = event.target.value;
-            dqSaveSettings();
-            showToast(
-                event.target.value === "en"
-                    ? "Language preference saved. Some text may remain in Indonesian."
-                    : "Preferensi bahasa disimpan."
-            );
-        });
-
-        byId("enableNotificationsBtn")?.addEventListener("click", async () => {
-            if (!("Notification" in window)) {
-                showToast("Browser ini tidak mendukung notifikasi.", "error");
-                return;
-            }
-
-            const permission = await Notification.requestPermission();
-
-            if (permission === "granted") {
-                new Notification("DailyQuest", {
-                    body: "Notifikasi berhasil diaktifkan."
-                });
-            } else {
-                showToast("Izin notifikasi belum diberikan.", "error");
-            }
-        });
-
-        byId("exportDataBtn")?.addEventListener("click", () => {
-            const backup = {
-                format: "dailyquest-backup",
-                version: 1,
-                exportedAt: new Date().toISOString(),
-                state,
-                preferences: dqSettings,
-                activities: dqActivities
-            };
-
-            const blob = new Blob(
-                [JSON.stringify(backup, null, 2)],
-                { type: "application/json" }
-            );
-
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `dailyquest-backup-${localDateKey()}.json`;
-            link.click();
-
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
-            dqRecordActivity("Backup diekspor");
-            showToast("Backup berhasil diunduh.");
-        });
-
-        byId("importDataBtn")?.addEventListener("click", () => {
-            byId("importDataFile")?.click();
-        });
-
-        byId("importDataFile")?.addEventListener("change", async event => {
-            const file = event.target.files?.[0];
-            if (!file) return;
-
-            try {
-                const backup = JSON.parse(await file.text());
-                const importedState = backup.state || backup;
-
-                if (
-                    !importedState ||
-                    !Array.isArray(importedState.quests) ||
-                    !Array.isArray(importedState.xpEvents)
-                ) {
-                    throw new Error("Format backup tidak valid.");
-                }
-
-                if (!confirm(
-                    `Pulihkan ${importedState.quests.length} quest dari backup? Data saat ini akan diganti.`
-                )) return;
-
-                state = normalizeState(importedState);
-
-                if (backup.preferences && typeof backup.preferences === "object") {
-                    dqSettings = {
-                        ...dqSettings,
-                        ...backup.preferences
-                    };
-                }
-
-                if (Array.isArray(backup.activities)) {
-                    dqActivities = backup.activities.slice(0, 100);
-                    localStorage.setItem(
-                        DQ_ACTIVITY_KEY,
-                        JSON.stringify(dqActivities)
-                    );
-                }
-
-                dqSaveSettings();
-                applyTheme(state.theme, false);
-                saveState();
-                renderAll();
-                dqApplySettings();
-                dqRecordActivity("Backup dipulihkan");
-
-                showToast("Backup berhasil dipulihkan.");
-            } catch (error) {
-                console.error(error);
-                showToast("Backup gagal dipulihkan. Periksa file JSON.", "error");
-            } finally {
-                event.target.value = "";
-            }
-        });
-
-        byId("viewActivityBtn")?.addEventListener("click", dqRenderActivity);
+    try {
+        dqAudioCtx = new AudioContextClass();
+    } catch (error) {
+        console.warn("DailyQuest: audio tidak tersedia.", error);
+        return null;
     }
 
-    dqApplySettings();
-    dqBindSettings();
+    return dqAudioCtx;
+}
 
-    function applyTheme(theme, persist = true) {
+function dqPlaySound(name = "notify") {
+    try {
+        if (dqSettings.sound === false) return;
+
+        const notes = DQ_SOUNDS[name];
+        if (!notes) return;
+
+        const ctx = dqGetAudio();
+        if (!ctx) return;
+
+        if (ctx.state === "suspended") ctx.resume();
+
+        // Nada diantrikan agar beberapa notifikasi beruntun tidak saling menimpa.
+        if (dqSoundCursor > ctx.currentTime + 3) {
+            dqSoundCursor = ctx.currentTime;
+        }
+
+        let time = Math.max(ctx.currentTime, dqSoundCursor) + 0.01;
+
+        notes.forEach(note => {
+            const oscillator = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            oscillator.type = note.type || "sine";
+            oscillator.frequency.value = note.f;
+
+            gain.gain.setValueAtTime(0.0001, time);
+            gain.gain.exponentialRampToValueAtTime(0.18, time + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.0001, time + note.d);
+
+            oscillator.connect(gain).connect(ctx.destination);
+            oscillator.start(time);
+            oscillator.stop(time + note.d + 0.03);
+
+            time += note.d * 0.85;
+        });
+
+        dqSoundCursor = time + 0.08;
+    } catch (error) {
+        console.warn("DailyQuest: suara gagal diputar.", error);
+    }
+}
+
+
+/* =========================================
+   EFEK VISUAL: KONFETI & POP CHECKBOX
+   ========================================= */
+
+function dqConfetti(count = 28) {
+    if (dqSettings.animations === false) return;
+
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+        return;
+    }
+
+    const colors = [
+        dqSettings.accent || "#8b5cf6",
+        "#ffd166",
+        "#06d6a0",
+        "#ef476f",
+        "#4cc9f0",
+        "#ffffff"
+    ];
+
+    const fragment = document.createDocumentFragment();
+
+    for (let i = 0; i < count; i += 1) {
+        const piece = document.createElement("span");
+
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.animationDelay = `${Math.random() * 0.25}s`;
+        piece.style.setProperty("--dx", `${Math.random() * 240 - 120}px`);
+        piece.style.setProperty("--rot", `${Math.random() * 900 - 450}deg`);
+        piece.style.setProperty("--dur", `${1.8 + Math.random() * 1.4}s`);
+
+        piece.addEventListener("animationend", () => piece.remove());
+        fragment.append(piece);
+    }
+
+    document.body.append(fragment);
+
+    window.setTimeout(() => {
+        $$(".confetti-piece").forEach(piece => piece.remove());
+    }, 5000);
+}
+
+function dqPopQuest(id) {
+    $$(`[data-quest-id="${CSS.escape(String(id))}"] .quest-check`).forEach(button => {
+        button.classList.add("pop");
+
+        window.setTimeout(() => {
+            button.classList.remove("pop");
+        }, 700);
+    });
+}
+
+
+/* =========================================
+   PENGINGAT HARIAN
+   ========================================= */
+
+function dqCheckReminder() {
+    try {
+        if (!dqSettings.reminder) return;
+
+        const now = new Date();
+        const [hour, minute] = String(dqSettings.reminderTime || "20:00")
+            .split(":")
+            .map(Number);
+
+        const dueTime = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            hour || 0,
+            minute || 0
+        );
+
+        const today = localDateKey();
+
+        if (now < dueTime || dqSettings.lastReminderDate === today) return;
+
+        dqSettings.lastReminderDate = today;
+        dqSaveSettings();
+
+        const pending = getTodayQuests().filter(
+            quest => !isCompleted(quest)
+        ).length;
+
+        if (!pending) return;
+
+        const message =
+            `Pengingat: kamu masih punya ${pending} quest hari ini.`;
+
+        showToast(message, "success", "notify");
+
+        if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("DailyQuest", {
+                body: window.DQI18n ? window.DQI18n.t(message) : message
+            });
+        }
+    } catch (error) {
+        console.warn("DailyQuest: pengingat gagal dijalankan.", error);
+    }
+}
+
+
+function dqApplySettings() {
+    const root = document.documentElement;
+    const accent = dqSettings.accent || "#8b5cf6";
+
+    // Warna aksen — seluruh turunannya (gradien, bayangan, ikon) dihitung di CSS.
+    root.style.setProperty("--accent-color", accent);
+
+    // Ukuran teks
+    const fontSize = Number(dqSettings.fontSize) || 16;
+    root.style.setProperty("--font-size", `${fontSize}px`);
+
+    // Animasi
+    root.dataset.animations =
+        dqSettings.animations === false ? "off" : "on";
+
+    // Bahasa (id / en / ja)
+    const language = ["id", "en", "ja"].includes(dqSettings.language)
+        ? dqSettings.language
+        : "id";
+
+    dqSettings.language = language;
+    root.lang = language;
+
+    if (window.DQI18n && window.DQI18n.getLanguage() !== language) {
+        window.DQI18n.setLanguage(language);
+    }
+
+    // Sinkronkan kontrol di modal Pengaturan
+    const setValue = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) element.value = String(value);
+    };
+
+    const setChecked = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) element.checked = Boolean(value);
+    };
+
+    setValue("settingAccent", accent);
+    setValue("settingFontSize", fontSize);
+    setValue("settingLanguage", language);
+    setValue("settingTargetXP", dqSettings.targetXP);
+    setValue("settingTargetQuests", dqSettings.targetQuests);
+    setValue("settingTargetStreak", dqSettings.targetStreak);
+    setValue("settingReminderTime", dqSettings.reminderTime || "20:00");
+
+    setChecked("settingSound", dqSettings.sound !== false);
+    setChecked("settingAnimations", dqSettings.animations !== false);
+    setChecked("settingReminder", dqSettings.reminder);
+}
+
+
+    // Terapkan pengaturan awal tanpa menghentikan aplikasi.
+dqApplySettings();
+
+function applyTheme(theme, persist = true)  {
     state.theme = theme === "light" ? "light" : "dark";
 
     document.documentElement.dataset.theme = state.theme;
 
     const themeIcon = document.querySelector("#themeIcon");
     const themeLabel = document.querySelector("#themeLabel");
-    const settingTheme = document.querySelector("#settingTheme");
 
     if (themeIcon) {
         themeIcon.textContent = state.theme === "dark" ? "☼" : "☾";
@@ -742,10 +750,6 @@ function dqRenderActivity() {
     if (themeLabel) {
         themeLabel.textContent =
             state.theme === "dark" ? "Light mode" : "Dark mode";
-    }
-
-    if (settingTheme) {
-        settingTheme.value = state.theme;
     }
 
     if (persist) {
@@ -934,7 +938,7 @@ function getUnlockedAchievements() {
    NOTIFIKASI
    ========================================= */
 
-function showToast(message, type = "success") {
+function showToast(message, type = "success", sound) {
     const toast = document.createElement("div");
 
     toast.className = `toast ${type}`;
@@ -942,8 +946,14 @@ function showToast(message, type = "success") {
 
     $("#toastContainer").appendChild(toast);
 
+    dqPlaySound(sound || (type === "error" ? "error" : "notify"));
+
     window.setTimeout(() => {
-        toast.remove();
+        toast.classList.add("leaving");
+
+        window.setTimeout(() => {
+            toast.remove();
+        }, 260);
     }, 3500);
 }
 
@@ -1352,7 +1362,7 @@ function renderChart(container, days = 7) {
             : Math.max(7, counts[index] / max * 100);
 
         const label = dateFromKey(key)
-            .toLocaleDateString("id-ID", {
+            .toLocaleDateString(dqLocale(), {
                 weekday: "short"
             });
 
@@ -1396,7 +1406,7 @@ function renderStatistics() {
     const streak = getStreakData();
 
     $("#statsXP").textContent =
-        getTotalXP().toLocaleString("id-ID");
+        getTotalXP().toLocaleString(dqLocale());
 
     $("#statsRate").textContent = `${rate}%`;
 
@@ -1511,7 +1521,7 @@ function renderDashboard() {
         : 0;
 
     $("#currentDate").textContent =
-        new Date().toLocaleDateString("id-ID", {
+        new Date().toLocaleDateString(dqLocale(), {
             weekday: "short",
             day: "numeric",
             month: "short",
@@ -1519,10 +1529,10 @@ function renderDashboard() {
         });
 
     $("#totalXP").innerHTML =
-        `${xp.toLocaleString("id-ID")} <small>XP</small>`;
+        `${xp.toLocaleString(dqLocale())} <small>XP</small>`;
 
     $("#totalCompleted").textContent =
-        getTotalCompleted().toLocaleString("id-ID");
+        getTotalCompleted().toLocaleString(dqLocale());
 
     $("#completedFoot").textContent =
         "Total completion";
@@ -1886,7 +1896,9 @@ function toggleQuest(id) {
             );
 
         showToast(
-            "Penyelesaian hari ini dibatalkan. XP telah disesuaikan."
+            "Penyelesaian hari ini dibatalkan. XP telah disesuaikan.",
+            "success",
+            "undo"
         );
     } else {
         quest.completedDates.push(today);
@@ -1908,7 +1920,9 @@ function toggleQuest(id) {
         }
 
         showToast(
-            `Quest selesai! +${quest.reward} XP ✦`
+            `Quest selesai! +${quest.reward} XP ✦`,
+            "success",
+            "complete"
         );
     }
 
@@ -1930,7 +1944,9 @@ function toggleQuest(id) {
                 newlyUnlocked.map(
                     achievement => achievement.name
                 ).join(", ")
-            }!`
+            }!`,
+            "success",
+            "achievement"
         );
     }
 
@@ -1941,7 +1957,21 @@ function toggleQuest(id) {
         newLevel > oldLevel
     ) {
         showToast(
-            `Level up! Sekarang Level ${newLevel} 🎉`
+            `Level up! Sekarang Level ${newLevel} 🎉`,
+            "success",
+            "levelup"
+        );
+    }
+
+    if (!alreadyCompleted) {
+        dqPopQuest(id);
+
+        dqConfetti(
+            newLevel > oldLevel
+                ? 80
+                : newlyUnlocked.length
+                    ? 50
+                    : 22
         );
     }
 
@@ -2246,22 +2276,131 @@ function bindEvents() {
         openProfileModal
     );
 
-    $("#settingsThemeToggle").addEventListener(
-    "click",
-    () => {
-        applyTheme(
-            state.theme === "dark" ? "light" : "dark"
-        );
-        saveState();
-        showToast("Tema berhasil diubah.");
-    }
-);
-
 
     $("#settingsBtn").addEventListener(
         "click",
         () => openModal("settingsModal")
     );
+
+    // Pengaturan warna aksen
+    $("#settingAccent")?.addEventListener("change", event => {
+        dqSettings.accent = event.target.value;
+        dqSaveSettings();
+        dqApplySettings();
+
+        showToast("Warna aksen berhasil diubah.");
+    });
+
+    // Bahasa: Indonesia / English / 日本語
+    $("#settingLanguage")?.addEventListener("change", event => {
+        dqSettings.language = event.target.value;
+        dqSaveSettings();
+        dqApplySettings();
+
+        // Render ulang agar tanggal, grafik, dan daftar ikut berganti bahasa.
+        renderAll();
+
+        showToast("Bahasa berhasil diubah.");
+    });
+
+    // Efek suara
+    $("#settingSound")?.addEventListener("change", event => {
+        dqSettings.sound = event.target.checked;
+        dqSaveSettings();
+
+        if (dqSettings.sound) {
+            dqPlaySound("complete");
+            showToast("Suara diaktifkan.", "success", "none");
+        } else {
+            showToast("Suara dimatikan.", "success", "none");
+        }
+    });
+
+    // Animasi
+    $("#settingAnimations")?.addEventListener("change", event => {
+        dqSettings.animations = event.target.checked;
+        dqSaveSettings();
+        dqApplySettings();
+    });
+
+    // Target harian
+    [
+        ["#settingTargetXP", "targetXP", 10, 10000],
+        ["#settingTargetQuests", "targetQuests", 1, 100],
+        ["#settingTargetStreak", "targetStreak", 1, 365]
+    ].forEach(([selector, key, min, max]) => {
+        $(selector)?.addEventListener("change", event => {
+            const value = Math.min(
+                max,
+                Math.max(min, Number(event.target.value) || min)
+            );
+
+            dqSettings[key] = value;
+            event.target.value = value;
+            dqSaveSettings();
+        });
+    });
+
+    // Pengingat
+    $("#settingReminder")?.addEventListener("change", event => {
+        dqSettings.reminder = event.target.checked;
+        dqSettings.lastReminderDate = "";
+        dqSaveSettings();
+        dqCheckReminder();
+    });
+
+    $("#settingReminderTime")?.addEventListener("change", event => {
+        dqSettings.reminderTime = event.target.value || "20:00";
+        dqSettings.lastReminderDate = "";
+        dqSaveSettings();
+        dqCheckReminder();
+    });
+
+    $("#enableNotificationsBtn")?.addEventListener("click", async () => {
+        if (!("Notification" in window)) {
+            showToast("Browser ini tidak mendukung notifikasi.", "error");
+            return;
+        }
+
+        try {
+            const result = await Notification.requestPermission();
+
+            if (result === "granted") {
+                showToast("Notifikasi browser diizinkan.");
+            } else {
+                showToast(
+                    "Notifikasi browser tidak diizinkan. Ubah izin di pengaturan browser.",
+                    "error"
+                );
+            }
+        } catch (error) {
+            console.warn("DailyQuest: izin notifikasi gagal.", error);
+        }
+    });
+
+  $("#settingFontSize")?.addEventListener("change", event => {
+    const size = Number(event.target.value);
+
+    if (![14, 16, 18].includes(size)) return;
+
+    dqSettings.fontSize = size;
+
+    document.documentElement.style.setProperty(
+        "--font-size",
+        `${size}px`
+    );
+
+    if (typeof dqSaveSettings === "function") {
+        dqSaveSettings();
+    } else {
+        localStorage.setItem(
+            "dailyquest_preferences_v1",
+            JSON.stringify(dqSettings)
+        );
+    }
+
+    showToast(`Ukuran teks diubah menjadi ${size}px.`);
+});
 
     $("#menuToggle").addEventListener(
         "click",
@@ -2393,10 +2532,11 @@ function bindEvents() {
 function initializeApp() {
     applyTheme(state.theme, false);
 
+    dqApplySettings();
+
     bindEvents();
 
     $("#profileTimezone").value = "local";
-
     $("#questDate").value = localDateKey();
 
     lastUnlocked = new Set(
@@ -2407,8 +2547,12 @@ function initializeApp() {
 
     renderAll();
 
+    dqCheckReminder();
+    window.setInterval(dqCheckReminder, 30000);
+
     console.info("DailyQuest siap digunakan.");
 }
+
 
 initializeApp();
 
