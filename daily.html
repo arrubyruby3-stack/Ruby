@@ -8,15 +8,86 @@
 
     <title>DailyQuest — Level Up Your Life</title>
 
+    <link id="dqFavicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%238b5cf6%27 stroke-width=%271.8%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Crect x=%275%27 y=%273%27 width=%2714%27 height=%2718%27 rx=%272.2%27/%3E%3Cpath d=%27M9 3v18M3 7.5h3M3 12h3M3 16.5h3M12.5 8h4M12.5 11.5h4M12.5 15h2.5%27/%3E%3C/svg%3E">
     <link rel="stylesheet" href="daily.css">
 </head>
     
 <body>
 
+    <!-- LATAR WALLPAPER (kaca/glassmorphism berada di atas layer ini) -->
+    <div id="dqWallpaper" class="dq-wallpaper" aria-hidden="true"></div>
+
+    <!-- SPRITE IKON -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <symbol id="icon-notebook" viewBox="0 0 24 24">
+            <rect x="5" y="3" width="14" height="18" rx="2.2"/>
+            <path d="M9 3v18M3 7.5h3M3 12h3M3 16.5h3M12.5 8h4M12.5 11.5h4M12.5 15h2.5"/>
+        </symbol>
+        <symbol id="icon-sliders" viewBox="0 0 24 24">
+            <path d="M4 6h9M19 6h1M4 12h3M13 12h7M4 18h11M21 18h-1"/>
+            <circle cx="16" cy="6" r="2.2"/><circle cx="10" cy="12" r="2.2"/><circle cx="18" cy="18" r="2.2"/>
+        </symbol>
+        <symbol id="icon-palette" viewBox="0 0 24 24">
+            <path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.9 1.5-1.9-.3-1 .4-2.1 1.5-2.1H17a4 4 0 0 0 4-4c0-5-4-10-9-10z"/>
+            <circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15.5" cy="7.5" r="1"/>
+        </symbol>
+        <symbol id="icon-target" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>
+        </symbol>
+        <symbol id="icon-bell" viewBox="0 0 24 24">
+            <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>
+        </symbol>
+        <symbol id="icon-volume" viewBox="0 0 24 24">
+            <path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>
+        </symbol>
+        <symbol id="icon-globe" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+        </symbol>
+        <symbol id="icon-database" viewBox="0 0 24 24">
+            <ellipse cx="12" cy="5.5" rx="8" ry="3"/>
+            <path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>
+        </symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
+        </symbol>
+        <symbol id="icon-camera" viewBox="0 0 24 24">
+            <path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+            <circle cx="12" cy="13" r="3.5"/>
+        </symbol>
+        <symbol id="icon-image" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-9 9"/>
+        </symbol>
+        <symbol id="icon-trash" viewBox="0 0 24 24">
+            <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>
+        </symbol>
+        <symbol id="icon-logout" viewBox="0 0 24 24">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+        </symbol>
+        <symbol id="icon-info" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>
+        </symbol>
+        <symbol id="icon-download" viewBox="0 0 24 24">
+            <path d="M12 4v11M7 11l5 5 5-5M4 20h16"/>
+        </symbol>
+        <symbol id="icon-upload" viewBox="0 0 24 24">
+            <path d="M12 16V5M7 9l5-5 5 5M4 20h16"/>
+        </symbol>
+        <symbol id="icon-warn" viewBox="0 0 24 24">
+            <path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/>
+        </symbol>
+        <symbol id="icon-list" viewBox="0 0 24 24">
+            <path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>
+        </symbol>
+        <symbol id="icon-chevron" viewBox="0 0 24 24">
+            <path d="m6 15 6-6 6 6"/>
+        </symbol>
+    </svg>
+
+
             <!-- LOGIN PAGE -->
     <div id="loginScreen" class="auth-screen">
         <div class="auth-card">
-            <div class="auth-logo">✦</div>
+            <div class="auth-logo"><svg class="ico logo-ico" aria-hidden="true"><use href="#icon-notebook"/></svg></div>
             <p class="auth-eyebrow">LEVEL UP YOUR LIFE</p>
             <h1>Welcome to <span>DailyQuest</span></h1>
             <p class="auth-subtitle">Login untuk melanjutkan perjalananmu.</p>
@@ -70,7 +141,7 @@
     <aside id="sidebar" class="sidebar">
 
         <a href="#" class="brand" data-page="dashboard">
-            <div class="brand-logo">✦</div>
+            <div class="brand-logo"><svg class="ico logo-ico" aria-hidden="true"><use href="#icon-notebook"/></svg></div>
             <div class="brand-text">
                 <strong>Daily<span>Quest</span></strong>
                 <small>LEVEL UP YOUR LIFE</small>
@@ -147,28 +218,70 @@
             </div>
         </div>
 
-            <div id="accountMenu" class="account-menu hidden">
-        <button type="button" id="aboutBtn">ⓘ Tentang Kami</button>
-        <button type="button" id="logoutBtn" class="account-logout">↪ Logout</button>
-             </div>
+            <!-- Menu lama dipertahankan (tersembunyi) agar handler logout/tentang tetap bekerja -->
+            <div id="accountMenu" class="account-menu hidden" hidden>
+                <button type="button" id="aboutBtn">ⓘ Tentang Kami</button>
+                <button type="button" id="logoutBtn" class="account-logout">↪ Logout</button>
+            </div>
 
-        <div class="sidebar-footer">
+        <div
+            id="accountTrigger"
+            class="sidebar-footer account-trigger"
+            role="button"
+            tabindex="0"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-label="Menu akun"
+            title="Menu akun"
+        >
             <div class="sidebar-avatar" id="sidebarAvatar">Q</div>
+
             <div class="sidebar-user-info">
                 <strong id="sidebarNameFooter">DailyQuest Player</strong>
                 <span id="storageStatus">● Saved locally</span>
             </div>
-            
+
+            <span class="account-more" aria-hidden="true">⋯</span>
+
             <button
                 id="footerProfileBtn"
                 class="icon-button"
-                aria-label="Menu akun"
-                title="Menu akun"
-                aria-expanded="false"
+                type="button"
+                hidden
+                tabindex="-1"
+                aria-hidden="true"
             >⋯</button>
         </div>
 
     </aside>
+
+    <!-- POPOVER MENU AKUN -->
+    <div id="dqAccountPopover" class="account-popover hidden" role="menu" aria-label="Menu akun">
+        <div class="ap-banner" id="apBanner" data-banner="accent"></div>
+
+        <div class="ap-head">
+            <div class="ap-avatar" id="apAvatar">Q</div>
+            <div class="ap-id">
+                <strong id="apName">Quest Player</strong>
+                <span id="apTitle">Novice Explorer</span>
+            </div>
+        </div>
+
+        <div class="ap-stats">
+            <span><b id="apLevel">1</b><small>Level</small></span>
+            <span><b id="apXP">0</b><small>XP</small></span>
+            <span><b id="apStreak">0</b><small>Streak</small></span>
+        </div>
+
+        <div class="ap-list">
+            <button type="button" role="menuitem" data-account-action="profile"><svg class="ico" aria-hidden="true"><use href="#icon-user"/></svg><span>Edit Profile</span></button>
+            <button type="button" role="menuitem" data-account-action="avatar"><svg class="ico" aria-hidden="true"><use href="#icon-camera"/></svg><span>Ganti foto profil</span></button>
+            <button type="button" role="menuitem" data-account-action="settings"><svg class="ico" aria-hidden="true"><use href="#icon-sliders"/></svg><span>Pengaturan</span></button>
+            <button type="button" role="menuitem" data-account-action="about"><svg class="ico" aria-hidden="true"><use href="#icon-info"/></svg><span>Tentang Kami</span></button>
+            <hr>
+            <button type="button" role="menuitem" class="ap-danger" data-account-action="logout"><svg class="ico" aria-hidden="true"><use href="#icon-logout"/></svg><span>Logout</span></button>
+        </div>
+    </div>
 
 
     <!-- MAIN CONTENT -->
@@ -734,6 +847,29 @@
 
                 </div>
 
+                <article class="panel line-chart-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="panel-kicker">TREND REPORT</div>
+                            <h2>XP trend</h2>
+                        </div>
+
+                        <div class="range-switch" role="group" aria-label="Rentang waktu">
+                            <button type="button" data-line-range="7">7D</button>
+                            <button type="button" data-line-range="14">14D</button>
+                            <button type="button" data-line-range="30">30D</button>
+                        </div>
+                    </div>
+
+                    <div id="lineSummary" class="line-summary"></div>
+
+                    <div
+                        id="xpLineChart"
+                        class="line-chart"
+                        aria-label="Grafik garis XP"
+                    ></div>
+                </article>
+
                 <article class="panel recent-activity-panel">
                     <div class="panel-heading">
                         <div>
@@ -752,7 +888,7 @@
 
         <!-- FOOTER -->
         <footer class="app-footer">
-            <span>✦ DailyQuest</span>
+            <span class="footer-brand"><svg class="ico footer-ico" aria-hidden="true"><use href="#icon-notebook"/></svg> DailyQuest</span>
             <span>Built for your next level.</span>
             <span>Local-first · No account required</span>
         </footer>
@@ -1001,56 +1137,97 @@
         aria-modal="true"
         aria-labelledby="profileModalTitle"
     >
-        <div class="modal modal-small">
+        <div class="modal profile-modal">
+            <form id="profileForm" novalidate>
 
-            <div class="modal-header">
-                <div>
-                    <div class="panel-kicker">YOUR IDENTITY</div>
-                    <h2 id="profileModalTitle">Edit profile</h2>
+                <div class="pf-banner" id="profileBannerPreview" data-banner="accent">
+                    <button
+                        type="button"
+                        class="icon-button modal-close pf-close"
+                        data-close-modal
+                        aria-label="Tutup"
+                    >×</button>
                 </div>
 
-                <button
-                    class="icon-button modal-close"
-                    data-close-modal
-                    aria-label="Tutup"
-                >×</button>
-            </div>
+                <div class="pf-avatar-row">
+                    <div class="pf-avatar" id="profileAvatarPreview">Q</div>
 
-            <form id="profileForm">
+                    <div class="pf-avatar-actions">
+                        <input id="profileAvatarInput" type="file" accept="image/*" hidden>
 
-                <div class="form-field">
-                    <label for="profileName">Display name</label>
+                        <button type="button" id="profileAvatarBtn" class="button button-secondary">
+                            <svg class="ico" aria-hidden="true"><use href="#icon-camera"/></svg><span>Unggah foto</span>
+                        </button>
 
-                    <input
-                        id="profileName"
-                        type="text"
-                        maxlength="40"
-                        placeholder="Nama kamu"
-                        required
-                    >
+                        <button type="button" id="profileAvatarRemove" class="pf-link-btn">Hapus foto</button>
+                    </div>
+                </div>
+
+                <div class="pf-head">
+                    <div class="panel-kicker">YOUR IDENTITY</div>
+                    <h2 id="profileModalTitle">Edit profile</h2>
+                    <p class="pf-sub">Foto otomatis dipotong persegi dan disimpan di akunmu.</p>
+                </div>
+
+                <div class="pf-stats" id="profileStats">
+                    <span><b id="pfLevel">1</b><small>Level</small></span>
+                    <span><b id="pfXP">0</b><small>XP</small></span>
+                    <span><b id="pfBest">0</b><small>Best streak</small></span>
+                    <span><b id="pfDone">0</b><small>Quest selesai</small></span>
+                </div>
+
+                <div class="pf-grid">
+
+                    <div class="form-field">
+                        <label for="profileName">Display name</label>
+                        <input id="profileName" type="text" maxlength="40" placeholder="Nama kamu" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="profileTitle">Julukan</label>
+                        <input id="profileTitle" type="text" maxlength="30" placeholder="Contoh: Pemburu Quest">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="profileLocation">Lokasi</label>
+                        <input id="profileLocation" type="text" maxlength="40" placeholder="Contoh: Jakarta">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="profileFavCategory">Kategori favorit</label>
+                        <select id="profileFavCategory">
+                            <option value="">Belum dipilih</option>
+                            <option value="Belajar">✎ Belajar</option>
+                            <option value="Kesehatan">♡ Kesehatan</option>
+                            <option value="Produktivitas">⚡ Produktivitas</option>
+                            <option value="Kebiasaan">↻ Kebiasaan</option>
+                            <option value="Personal">✧ Personal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field pf-wide">
+                        <label for="profileBio">Bio</label>
+                        <textarea id="profileBio" rows="2" maxlength="160" placeholder="Ceritakan sedikit tentang dirimu atau motto hidupmu"></textarea>
+                        <small class="pf-counter"><span id="profileBioCount">0</span>/160</small>
+                    </div>
+
+                    <div class="form-field pf-wide">
+                        <label>Warna banner</label>
+                        <div class="pf-banner-row" id="profileBannerChoices" role="radiogroup" aria-label="Warna banner"><button type="button" class="pf-banner-choice" data-banner="accent" aria-label="accent"></button><button type="button" class="pf-banner-choice" data-banner="sunset" aria-label="sunset"></button><button type="button" class="pf-banner-choice" data-banner="ocean" aria-label="ocean"></button><button type="button" class="pf-banner-choice" data-banner="forest" aria-label="forest"></button><button type="button" class="pf-banner-choice" data-banner="rose" aria-label="rose"></button><button type="button" class="pf-banner-choice" data-banner="mono" aria-label="mono"></button></div>
+                    </div>
+
+                    <p class="pf-joined pf-wide">Bergabung sejak <strong id="pfJoined">—</strong></p>
+
                 </div>
 
                 <input id="profileTimezone" type="hidden" value="local">
 
                 <div class="modal-actions">
-                    <button
-                        type="button"
-                        class="button button-secondary"
-                        data-close-modal
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="button button-primary"
-                    >
-                        Save profile <span>✓</span>
-                    </button>
+                    <button type="button" class="button button-secondary" data-close-modal>Cancel</button>
+                    <button type="submit" class="button button-primary">Save profile <span>✓</span></button>
                 </div>
 
             </form>
-
         </div>
     </div>
 
@@ -1064,154 +1241,288 @@
     ></div>
     
     <!-- MODAL PENGATURAN -->
-    <div id="settingsModal" class="modal-backdrop hidden">
-        <div class="modal-card settings-card">
-            <div class="modal-header">
-                <div>
-                    <h2>Pengaturan</h2>
-                    <p>Atur preferensi DailyQuest.</p>
-                </div>
-                <button class="icon-button" data-close-modal aria-label="Tutup">×</button>
-            </div>
+    <div
+        id="settingsModal"
+        class="modal-backdrop hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settingsHeading"
+    >
+        <div class="modal settings-modal">
 
-
-             <div class="settings-section">
-                <h3>🎨 Tampilan</h3>
-
-            <label for="settingAccent">Warna aksen</label>
-            <select id="settingAccent">
-                <option value="#8b5cf6">Ungu</option>
-                <option value="#3b82f6">Biru</option>
-                <option value="#10b981">Hijau</option>
-                <option value="#f97316">Oranye</option>
-                <option value="#ec4899">Merah muda</option>
-            </select>
-
-            <label for="settingFontSize">Ukuran teks</label>
-            <select id="settingFontSize">
-                <option value="14">Kecil</option>
-                <option value="16">Normal</option>
-                <option value="18">Besar</option>
-            </select>
-            </div>
-
-            <div class="settings-section">
-            <h3>🎯 Target harian</h3>
-
-            <label for="settingTargetXP">Target XP per hari</label>
-            <input id="settingTargetXP" type="number" min="10" max="10000" step="10" value="100">
-
-            <label for="settingTargetQuests">Target quest selesai per hari</label>
-            <input id="settingTargetQuests" type="number" min="1" max="100" value="3">
-
-            <label for="settingTargetStreak">Target streak (hari)</label>
-            <input id="settingTargetStreak" type="number" min="1" max="365" value="7">
-            </div>
-
-            <div class="settings-section">
-            <h3>🔔 Pengingat</h3>
-
-            <label class="settings-check">
-                <input id="settingReminder" type="checkbox">
-                Aktifkan pengingat saat aplikasi dibuka
-            </label>
-
-            <label for="settingReminderTime">Waktu pengingat</label>
-            <input id="settingReminderTime" type="time" value="20:00">
-
-            <button id="enableNotificationsBtn" type="button" class="primary-button">
-                Izinkan notifikasi browser
-            </button>
-
-            <p class="settings-note">
-                Pengingat otomatis hanya berjalan ketika aplikasi aktif. Browser mungkin membatasi notifikasi di latar belakang.
-            </p>
-            </div>
-
-            <div class="settings-section">
-            <h3>🔊 Efek</h3>
-
-            <label class="settings-check">
-                <input id="settingSound" type="checkbox" checked>
-                Aktifkan suara
-            </label>
-
-            <label class="settings-check">
-                <input id="settingAnimations" type="checkbox" checked>
-                Aktifkan animasi ikon
-            </label>
-            </div>
-
-            <div class="settings-section">
-            <h3>🌐 Bahasa</h3>
-            <label for="settingLanguage">Bahasa aplikasi</label>
-            <select id="settingLanguage">
-                <option value="id">Bahasa Indonesia</option>
-                <option value="en">English</option>
-                <option value="ja">日本語</option>
-            </select>
-            <p class="settings-note">
-                Bahasa langsung diterapkan ke seluruh tampilan aplikasi.
-            </p>
-            </div>
-
-            <div class="settings-section">
-            <h3>💾 Data & privasi</h3>
-
-            <button id="importDataBtn" type="button" class="secondary-button">
-                Pulihkan backup JSON
-            </button>
-            <input id="importDataFile" type="file" accept=".json,application/json" hidden>
-
-            <button id="exportDataBtn" type="button" class="secondary-button">
-                Ekspor backup JSON
-            </button>
-
-            <button id="viewActivityBtn" type="button" class="secondary-button">
-                Lihat aktivitas
-            </button>
-
-            <div id="activityList" class="settings-activity">
-                Belum ada aktivitas yang dicatat.
-            </div>
-
-            <p class="settings-note">
-                Backup berisi data aplikasi, bukan kata sandi atau token login.
-            </p>
-
-            <button id="resetDataBtn" type="button" class="danger-button">
-                Reset data aplikasi
-            </button>
-            </div>
-
-            <div class="settings-group">
-                <h3>Data</h3>
-                <div class="settings-row">
+            <aside class="settings-nav">
+                <div class="settings-nav-head">
+                    <span class="settings-nav-icon"><svg class="ico" aria-hidden="true"><use href="#icon-sliders"/></svg></span>
                     <div>
-                        <strong>Ekspor data</strong>
-                        <p>Unduh cadangan quest dan progresmu.</p>
+                        <strong id="settingsHeading">Pengaturan</strong>
+                        <small>Atur preferensi DailyQuest.</small>
                     </div>
-                    <button id="exportDataBtn" class="settings-action">
-                        Ekspor JSON
-                    </button>
                 </div>
 
-                <div class="settings-row">
-                    <div>
-                        <strong>Hapus seluruh data</strong>
-                        <p>Hapus semua quest, XP, dan progres lokal.</p>
+                <nav class="settings-tabs" role="tablist" aria-orientation="vertical">
+                    <button type="button" role="tab" class="settings-tab active" data-settings-tab="appearance" aria-selected="true"><svg class="ico" aria-hidden="true"><use href="#icon-palette"/></svg><span>Tampilan</span></button>
+                    <button type="button" role="tab" class="settings-tab" data-settings-tab="goals" aria-selected="false"><svg class="ico" aria-hidden="true"><use href="#icon-target"/></svg><span>Target</span></button>
+                    <button type="button" role="tab" class="settings-tab" data-settings-tab="reminders" aria-selected="false"><svg class="ico" aria-hidden="true"><use href="#icon-bell"/></svg><span>Pengingat</span></button>
+                    <button type="button" role="tab" class="settings-tab" data-settings-tab="effects" aria-selected="false"><svg class="ico" aria-hidden="true"><use href="#icon-volume"/></svg><span>Efek</span></button>
+                    <button type="button" role="tab" class="settings-tab" data-settings-tab="language" aria-selected="false"><svg class="ico" aria-hidden="true"><use href="#icon-globe"/></svg><span>Bahasa</span></button>
+                    <button type="button" role="tab" class="settings-tab" data-settings-tab="data" aria-selected="false"><svg class="ico" aria-hidden="true"><use href="#icon-database"/></svg><span>Data & privasi</span></button>
+                </nav>
+
+                <div class="settings-nav-foot">DailyQuest · v1.0</div>
+            </aside>
+
+            <div class="settings-content">
+                <button
+                    type="button"
+                    class="icon-button modal-close settings-close"
+                    data-close-modal
+                    aria-label="Tutup"
+                >×</button>
+
+                <div class="settings-panels">
+
+                    <!-- TAMPILAN -->
+                    <section class="settings-panel active" data-settings-panel="appearance" role="tabpanel">
+                        <header class="settings-panel-head">
+                            <h3>Tampilan</h3>
+                            <p>Sesuaikan warna, wallpaper, dan efek kaca aplikasi.</p>
+                        </header>
+
+                        <div class="set-card">
+                            <div class="set-card-head">
+                                <h4>Warna aksen</h4>
+                                <p>Dipakai di tombol, ikon, grafik, dan seluruh halaman.</p>
+                            </div>
+                            <div class="swatch-row" id="accentSwatches" role="radiogroup" aria-label="Warna aksen">
+                                <button type="button" class="swatch" data-accent="#8b5cf6" style="--c:#8b5cf6" title="Ungu" aria-label="Ungu" role="radio"></button><button type="button" class="swatch" data-accent="#3b82f6" style="--c:#3b82f6" title="Biru" aria-label="Biru" role="radio"></button><button type="button" class="swatch" data-accent="#06b6d4" style="--c:#06b6d4" title="Sian" aria-label="Sian" role="radio"></button><button type="button" class="swatch" data-accent="#10b981" style="--c:#10b981" title="Hijau" aria-label="Hijau" role="radio"></button><button type="button" class="swatch" data-accent="#eab308" style="--c:#eab308" title="Kuning" aria-label="Kuning" role="radio"></button><button type="button" class="swatch" data-accent="#f97316" style="--c:#f97316" title="Oranye" aria-label="Oranye" role="radio"></button><button type="button" class="swatch" data-accent="#ef4444" style="--c:#ef4444" title="Merah" aria-label="Merah" role="radio"></button><button type="button" class="swatch" data-accent="#ec4899" style="--c:#ec4899" title="Merah muda" aria-label="Merah muda" role="radio"></button>
+                                <label class="swatch swatch-custom" title="Warna kustom">
+                                    <input type="color" id="settingAccentCustom" value="#8b5cf6" aria-label="Warna kustom">
+                                    <span aria-hidden="true">+</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="set-card">
+                            <div class="set-card-head">
+                                <h4>Wallpaper</h4>
+                                <p>Pilih latar belakang atau unggah fotomu sendiri.</p>
+                            </div>
+
+                            <div class="wp-preview" id="wallpaperPreview">
+                                <div class="wp-preview-card">
+                                    <span class="wp-preview-dot"></span>
+                                    <span class="wp-preview-line"></span>
+                                    <span class="wp-preview-line short"></span>
+                                </div>
+                            </div>
+
+                            <div class="wp-presets" id="wallpaperPresets" role="radiogroup" aria-label="Wallpaper"></div>
+
+                            <div class="settings-btn-row">
+                                <input id="settingWallpaperFile" type="file" accept="image/*" hidden>
+                                <button type="button" id="wallpaperUploadBtn" class="button button-primary"><svg class="ico" aria-hidden="true"><use href="#icon-upload"/></svg><span>Unggah gambar</span></button>
+                                <button type="button" id="wallpaperRemoveBtn" class="button button-secondary"><svg class="ico" aria-hidden="true"><use href="#icon-trash"/></svg><span>Hapus wallpaper</span></button>
+                            </div>
+
+                            <label class="slider-row" for="settingWallDim">
+                                <span class="slider-label">Redupkan wallpaper</span>
+                                <output id="outWallDim">20%</output>
+                                <input id="settingWallDim" type="range" min="0" max="70" step="1">
+                            </label>
+
+                            <label class="slider-row" for="settingWallBlur">
+                                <span class="slider-label">Blur wallpaper</span>
+                                <output id="outWallBlur">0px</output>
+                                <input id="settingWallBlur" type="range" min="0" max="20" step="1">
+                            </label>
+                        </div>
+
+                        <div class="set-card">
+                            <div class="set-card-head">
+                                <h4>Efek kaca</h4>
+                                <p>Atur seberapa buram dan transparan panel kaca.</p>
+                            </div>
+
+                            <label class="slider-row" for="settingGlassBlur">
+                                <span class="slider-label">Blur kaca</span>
+                                <output id="outGlassBlur">18px</output>
+                                <input id="settingGlassBlur" type="range" min="0" max="40" step="1">
+                            </label>
+
+                            <label class="slider-row" for="settingGlassAlpha">
+                                <span class="slider-label">Transparansi kaca</span>
+                                <output id="outGlassAlpha">8%</output>
+                                <input id="settingGlassAlpha" type="range" min="3" max="30" step="1">
+                            </label>
+                        </div>
+
+                        <div class="set-card">
+                            <div class="set-card-head">
+                                <h4>Ukuran teks</h4>
+                            </div>
+                            <div class="segmented" id="fontSizeSegments" role="radiogroup" aria-label="Ukuran teks">
+                                <button type="button" data-font="14" role="radio">Kecil</button>
+                                <button type="button" data-font="16" role="radio">Normal</button>
+                                <button type="button" data-font="18" role="radio">Besar</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TARGET -->
+                    <section class="settings-panel" data-settings-panel="goals" role="tabpanel">
+                        <header class="settings-panel-head">
+                            <h3>Target harian</h3>
+                            <p>Tetapkan target agar progresmu lebih terarah.</p>
+                        </header>
+
+                        <div class="set-card settings-fields">
+                            <label class="field">
+                                <span>Target XP per hari</span>
+                                <input id="settingTargetXP" type="number" min="10" max="10000" step="10" value="100">
+                            </label>
+                            <label class="field">
+                                <span>Target quest selesai per hari</span>
+                                <input id="settingTargetQuests" type="number" min="1" max="100" value="3">
+                            </label>
+                            <label class="field">
+                                <span>Target streak (hari)</span>
+                                <input id="settingTargetStreak" type="number" min="1" max="365" value="7">
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- PENGINGAT -->
+                    <section class="settings-panel" data-settings-panel="reminders" role="tabpanel">
+                        <header class="settings-panel-head">
+                            <h3>Pengingat</h3>
+                            <p>Dapatkan pengingat bila quest hari ini belum selesai.</p>
+                        </header>
+
+                        <div class="set-card">
+                            <div class="switch-row">
+                        <div class="switch-text"><strong>Aktifkan pengingat saat aplikasi dibuka</strong><small>Pengingat muncul sekali sehari pada waktu yang kamu pilih.</small></div>
+                        <label class="switch"><input id="settingReminder" type="checkbox" aria-label="Aktifkan pengingat saat aplikasi dibuka"><span class="switch-track"></span></label>
                     </div>
-                    <button id="resetDataBtn" class="settings-action danger">
-                        Reset data
-                    </button>
+
+                            <label class="field">
+                                <span>Waktu pengingat</span>
+                                <input id="settingReminderTime" type="time" value="20:00">
+                            </label>
+
+                            <div class="settings-btn-row">
+                                <button id="enableNotificationsBtn" type="button" class="button button-primary"><svg class="ico" aria-hidden="true"><use href="#icon-bell"/></svg><span>Izinkan notifikasi browser</span></button>
+                            </div>
+
+                            <p class="settings-note">Pengingat otomatis hanya berjalan ketika aplikasi aktif. Browser mungkin membatasi notifikasi di latar belakang.</p>
+                        </div>
+                    </section>
+
+                    <!-- EFEK -->
+                    <section class="settings-panel" data-settings-panel="effects" role="tabpanel">
+                        <header class="settings-panel-head">
+                            <h3>Efek</h3>
+                            <p>Atur suara dan animasi.</p>
+                        </header>
+
+                        <div class="set-card">
+                            <div class="switch-row">
+                        <div class="switch-text"><strong>Aktifkan suara</strong><small>Nada saat quest selesai, notifikasi, dan naik level.</small></div>
+                        <label class="switch"><input id="settingSound" type="checkbox" aria-label="Aktifkan suara"><span class="switch-track"></span></label>
+                    </div>
+                            <div class="switch-row">
+                        <div class="switch-text"><strong>Aktifkan animasi ikon</strong><small>Konfeti, transisi halus, dan animasi keyframe.</small></div>
+                        <label class="switch"><input id="settingAnimations" type="checkbox" aria-label="Aktifkan animasi ikon"><span class="switch-track"></span></label>
+                    </div>
+
+                            <div class="settings-btn-row">
+                                <button id="testSoundBtn" type="button" class="button button-secondary"><svg class="ico" aria-hidden="true"><use href="#icon-volume"/></svg><span>Coba suara</span></button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- BAHASA -->
+                    <section class="settings-panel" data-settings-panel="language" role="tabpanel">
+                        <header class="settings-panel-head">
+                            <h3>Bahasa</h3>
+                            <p>Pilih bahasa tampilan aplikasi.</p>
+                        </header>
+
+                        <div class="lang-grid" id="languageCards" role="radiogroup" aria-label="Bahasa aplikasi">
+                            <button type="button" class="lang-card" data-lang="id" role="radio"><span class="lang-code">ID</span><span class="lang-name">Bahasa Indonesia</span><span class="lang-check">✓</span></button>
+                            <button type="button" class="lang-card" data-lang="en" role="radio"><span class="lang-code">EN</span><span class="lang-name">English</span><span class="lang-check">✓</span></button>
+                            <button type="button" class="lang-card" data-lang="ja" role="radio"><span class="lang-code">JA</span><span class="lang-name">日本語</span><span class="lang-check">✓</span></button>
+                        </div>
+
+                        <p class="settings-note">Bahasa langsung diterapkan ke seluruh tampilan aplikasi.</p>
+                    </section>
+
+                    <!-- DATA -->
+                    <section class="settings-panel" data-settings-panel="data" role="tabpanel">
+                        <header class="settings-panel-head">
+                            <h3>Data & privasi</h3>
+                            <p>Cadangkan, pulihkan, atau hapus data aplikasi.</p>
+                        </header>
+
+                        <div class="set-card">
+                            <div class="set-card-head">
+                                <h4>Backup data</h4>
+                                <p>Backup berisi data aplikasi, bukan kata sandi atau token login.</p>
+                            </div>
+                            <div class="settings-btn-row">
+                                <button id="exportDataBtn" type="button" class="button button-secondary"><svg class="ico" aria-hidden="true"><use href="#icon-download"/></svg><span>Ekspor backup JSON</span></button>
+                                <button id="importDataBtn" type="button" class="button button-secondary"><svg class="ico" aria-hidden="true"><use href="#icon-upload"/></svg><span>Pulihkan backup JSON</span></button>
+                                <input id="importDataFile" type="file" accept=".json,application/json" hidden>
+                            </div>
+                        </div>
+
+                        <div class="set-card">
+                            <div class="set-card-head">
+                                <h4>Aktivitas</h4>
+                            </div>
+                            <div class="settings-btn-row">
+                                <button id="viewActivityBtn" type="button" class="button button-secondary"><svg class="ico" aria-hidden="true"><use href="#icon-list"/></svg><span>Lihat aktivitas</span></button>
+                            </div>
+                            <div id="activityList" class="settings-activity hidden">Belum ada aktivitas yang dicatat.</div>
+                        </div>
+
+                        <div class="set-card danger-zone">
+                            <div class="set-card-head">
+                                <h4>Zona berbahaya</h4>
+                                <p>Hapus semua quest, XP, dan progres. Profil dan preferensi tampilan tidak ikut terhapus.</p>
+                            </div>
+                            <div class="settings-btn-row">
+                                <button id="resetDataBtn" type="button" class="button button-danger"><svg class="ico" aria-hidden="true"><use href="#icon-trash"/></svg><span>Reset data aplikasi</span></button>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+                <div class="settings-footer">
+                    <button type="button" class="button button-primary" data-close-modal>Selesai</button>
                 </div>
             </div>
 
-            <div class="settings-footer">
-                <span>DailyQuest</span>
-                <button class="settings-action" data-close-modal>
-                    Selesai
-                </button>
+        </div>
+    </div>
+
+    <!-- KONFIRMASI UMUM (reset data, pulihkan backup, dll.) -->
+    <div
+        id="dqConfirmModal"
+        class="modal-backdrop hidden"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="dqConfirmTitle"
+        aria-describedby="dqConfirmMessage"
+    >
+        <div class="modal modal-small dq-confirm">
+            <div class="dq-confirm-icon"><svg class="ico" aria-hidden="true"><use href="#icon-warn"/></svg></div>
+            <h2 id="dqConfirmTitle">Reset data aplikasi?</h2>
+            <p id="dqConfirmMessage">Apakah anda ingin menghapus data? Data yang telah dihapus tidak akan kembali lagi!</p>
+
+            <div class="modal-actions">
+                <button type="button" id="dqConfirmCancel" class="button button-secondary">Batal</button>
+                <button type="button" id="dqConfirmOk" class="button button-danger">Ya, hapus data</button>
             </div>
         </div>
     </div>
@@ -1222,12 +1533,12 @@
         <div class="modal modal-small">
             <div class="modal-header">
                 <h2>Tentang DailyQuest</h2>
-                <button type="button" id="aboutCloseBtn"
+                <button type="button" id="aboutCloseBtn" data-close-modal
                     class="icon-button" aria-label="Tutup">×</button>
             </div>
 
             <div class="about-content">
-                <div class="about-logo">✦</div>
+                <div class="about-logo"><svg class="ico logo-ico" aria-hidden="true"><use href="#icon-notebook"/></svg></div>
                 <h3>DailyQuest</h3>
                 <p>Level Up Your Life.</p>
                 <p>
