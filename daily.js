@@ -825,6 +825,8 @@ function dqApplySettings() {
         window.DQI18n.setLanguage(language);
     }
 
+    dqSyncSelects();
+
     // Sinkronkan kontrol di modal Pengaturan
     const setValue = (id, value) => {
         const element = document.getElementById(id);
@@ -1770,6 +1772,7 @@ function renderDashboard() {
 function renderAll() {
     renderDashboard();
     renderStatistics();
+    dqSyncSelects();
 }
 
 
@@ -1844,8 +1847,10 @@ function openModal(id) {
     modal.classList.remove("hidden");
     document.body.style.overflow = "hidden";
 
+    dqSyncSelects();
+
     const focusable = $(
-        "input:not([type=hidden]), textarea, select, button",
+        "input:not([type=hidden]):not([type=file]), textarea, .dq-select-btn, button",
         modal
     );
 
@@ -3384,6 +3389,8 @@ function dqShowSettingsTab(name) {
 }
 
 function dqBindNewFeatures() {
+    dqEnhanceSelects();
+
     /* Tab pengaturan */
     $(".settings-tabs")?.addEventListener("click", event => {
         const tab = event.target.closest("[data-settings-tab]");
@@ -3636,6 +3643,243 @@ function dqBindNewFeatures() {
         dqSettings.lineRange = Number(button.dataset.lineRange);
         dqSaveSettings();
         renderLineChart();
+    });
+}
+
+
+/* =========================================
+   DROPDOWN KUSTOM (pengganti <select> bawaan browser)
+   <select> asli tetap ada (disembunyikan) agar nilai, event
+   "change", dan kode lama tetap bekerja.
+   ========================================= */
+
+let dqOpenSelect = null;
+
+function dqSyncSelect(select) {
+    const button = select.nextElementSibling;
+
+    if (!button || !button.classList.contains("dq-select-btn")) return;
+
+    const option = select.options[select.selectedIndex];
+    const value = button.querySelector(".dq-select-value");
+
+    if (value) value.textContent = option ? option.textContent.trim() : "";
+
+    button.disabled = select.disabled;
+}
+
+function dqSyncSelects() {
+    $$("select[data-dq-enhanced]").forEach(dqSyncSelect);
+}
+
+function dqCloseSelectMenu(refocus = false) {
+    if (!dqOpenSelect) return;
+
+    const { menu, button, cleanup } = dqOpenSelect;
+
+    cleanup();
+    menu.remove();
+
+    button.setAttribute("aria-expanded", "false");
+    button.classList.remove("is-open");
+
+    dqOpenSelect = null;
+
+    if (refocus) button.focus();
+}
+
+function dqChooseOption(select, index) {
+    if (select.selectedIndex !== index) {
+        select.selectedIndex = index;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    dqSyncSelect(select);
+    dqCloseSelectMenu(true);
+}
+
+function dqOpenSelectMenu(select, button) {
+    if (dqOpenSelect && dqOpenSelect.button === button) {
+        dqCloseSelectMenu(true);
+        return;
+    }
+
+    dqCloseSelectMenu();
+
+    const menu = document.createElement("div");
+
+    menu.className = "dq-select-menu";
+    menu.setAttribute("role", "listbox");
+
+    [...select.options].forEach((option, index) => {
+        if (option.hidden) return;
+
+        const item = document.createElement("button");
+        const text = document.createElement("span");
+        const check = document.createElement("span");
+        const selected = index === select.selectedIndex;
+
+        item.type = "button";
+        item.className = "dq-select-item";
+        item.dataset.index = String(index);
+        item.setAttribute("role", "option");
+        item.setAttribute("aria-selected", String(selected));
+        item.disabled = option.disabled;
+        item.classList.toggle("is-selected", selected);
+
+        text.textContent = option.textContent.trim();
+        check.className = "dq-select-check";
+        check.textContent = "✓";
+        check.setAttribute("aria-hidden", "true");
+
+        item.append(text, check);
+        menu.append(item);
+    });
+
+    document.body.append(menu);
+
+    const rect = button.getBoundingClientRect();
+    const margin = 12;
+
+    menu.style.minWidth = `${rect.width}px`;
+    menu.style.maxHeight = `${Math.min(300, window.innerHeight - margin * 2)}px`;
+
+    const height = menu.offsetHeight;
+    const below = window.innerHeight - rect.bottom - margin;
+    const above = rect.top - margin;
+    const openUp = height > below && above > below;
+
+    menu.classList.toggle("is-up", openUp);
+
+    if (openUp) {
+        menu.style.bottom = `${window.innerHeight - rect.top + 6}px`;
+        menu.style.maxHeight = `${Math.min(300, above - 6)}px`;
+    } else {
+        menu.style.top = `${rect.bottom + 6}px`;
+        menu.style.maxHeight = `${Math.min(300, below - 6)}px`;
+    }
+
+    menu.style.left = `${Math.max(
+        margin,
+        Math.min(rect.left, window.innerWidth - menu.offsetWidth - margin)
+    )}px`;
+
+    button.setAttribute("aria-expanded", "true");
+    button.classList.add("is-open");
+
+    const items = () => [...menu.querySelectorAll(".dq-select-item:not(:disabled)")];
+
+    const onMenuClick = event => {
+        const item = event.target.closest(".dq-select-item");
+
+        if (item) dqChooseOption(select, Number(item.dataset.index));
+    };
+
+    const onMenuKey = event => {
+        const list = items();
+        const current = list.indexOf(document.activeElement);
+
+        const move = next => {
+            event.preventDefault();
+            list[(next + list.length) % list.length]?.focus();
+        };
+
+        if (event.key === "ArrowDown") move(current + 1);
+        else if (event.key === "ArrowUp") move(current - 1);
+        else if (event.key === "Home") move(0);
+        else if (event.key === "End") move(list.length - 1);
+        else if (event.key === "Escape") {
+            // jangan ikut menutup modal di belakangnya
+            event.preventDefault();
+            event.stopPropagation();
+            dqCloseSelectMenu(true);
+        } else if (event.key === "Tab") {
+            dqCloseSelectMenu();
+        }
+    };
+
+    const onOutside = event => {
+        if (!menu.contains(event.target) && !button.contains(event.target)) {
+            dqCloseSelectMenu();
+        }
+    };
+
+    const onScroll = event => {
+        if (!menu.contains(event.target)) dqCloseSelectMenu();
+    };
+
+    const onResize = () => dqCloseSelectMenu();
+
+    menu.addEventListener("click", onMenuClick);
+    menu.addEventListener("keydown", onMenuKey);
+
+    document.addEventListener("pointerdown", onOutside, true);
+    document.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onResize);
+
+    dqOpenSelect = {
+        menu,
+        button,
+        cleanup() {
+            document.removeEventListener("pointerdown", onOutside, true);
+            document.removeEventListener("scroll", onScroll, true);
+            window.removeEventListener("resize", onResize);
+        }
+    };
+
+    const active =
+        menu.querySelector(".dq-select-item.is-selected") ||
+        menu.querySelector(".dq-select-item");
+
+    active?.focus({ preventScroll: true });
+    active?.scrollIntoView({ block: "nearest" });
+}
+
+function dqEnhanceSelects() {
+    $$("select").forEach(select => {
+        if (select.dataset.dqEnhanced) return;
+
+        select.dataset.dqEnhanced = "1";
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "dq-select-btn";
+        button.setAttribute("aria-haspopup", "listbox");
+        button.setAttribute("aria-expanded", "false");
+
+        const label =
+            select.getAttribute("aria-label") ||
+            (select.id &&
+                document.querySelector(`label[for="${select.id}"]`)?.textContent) ||
+            "";
+
+        if (label) button.setAttribute("aria-label", label.trim());
+
+        button.innerHTML =
+            '<span class="dq-select-value"></span>' +
+            '<svg class="ico dq-select-caret" aria-hidden="true"><use href="#icon-chevron"/></svg>';
+
+        select.classList.add("dq-select-native");
+        select.tabIndex = -1;
+        select.setAttribute("aria-hidden", "true");
+        select.insertAdjacentElement("afterend", button);
+
+        button.addEventListener("click", () => dqOpenSelectMenu(select, button));
+
+        button.addEventListener("keydown", event => {
+            if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+                event.preventDefault();
+                dqOpenSelectMenu(select, button);
+            }
+        });
+
+        select.addEventListener("change", () => dqSyncSelect(select));
+        select.form?.addEventListener("reset", () => {
+            window.setTimeout(() => dqSyncSelect(select), 0);
+        });
+
+        dqSyncSelect(select);
     });
 }
 
